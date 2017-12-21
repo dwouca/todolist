@@ -11,17 +11,19 @@ function updateHTML () {
   output = [];
   completed = [];
   notcompleted = [];
+  /* create <div> for each task */
   (JSON.parse(localStorage.tasks)).forEach(function(task,i){
     if (task.completed == true) {
       completed.push(
-        `<li id="task${task.id}" class="tasks completedtrue">${task.name} - completed</div>`
+        `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedtrue">${task.name} - completed</li></div>`
       );
     } else {
       notcompleted.push(
-        `<li id="task${task.id}" class="tasks completedfalse">${task.name} - notcompleted</div>`
+        `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedfalse">${task.name} - notcompleted</li></div>`
       );
     }
   });
+  /* not completed tasks first */
   notcompleted.forEach(function(task){
     output.push(task);
   });
@@ -29,18 +31,20 @@ function updateHTML () {
     output.push(task);
   });
   taskContainer.innerHTML = output.join("");
-  /*Delete on click
-  tasks = taskContainer.querySelectorAll('.tasks');
+
+  /* delete on remove button click */
+  tasks = taskContainer.querySelectorAll('.delete');
   for(var i=0; i<tasks.length; i++){
     tasks[i].addEventListener('click', function(){
-      removeTask(this.id.replace("task", ""));
+      removeTask(this.parentNode.id.replace("task", ""));
       updateHTML();
     });
-  }*/
+  }
+  /* change status when item clicked */
   tasks = taskContainer.querySelectorAll('.tasks');
   for(var i=0; i<tasks.length; i++){
     tasks[i].addEventListener('click', function(){
-      changeStatus(this.id.replace("task", ""));
+      changeStatus(this.parentNode.id.replace("task", ""));
       updateHTML();
     });
   }

@@ -53,3 +53,16 @@ body{
   text-align: center;
   width: 100%;
 }
+
+.delete{
+  margin: 0px;
+  background-color: red;
+  width:20px;
+  height:25px;
+  display:inline-block;
+  float:right;
+}
+
+.delete:hover{
+  background-color: tomato;
+}

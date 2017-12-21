@@ -12,20 +12,29 @@ function updateHTML () {
   (JSON.parse(localStorage.tasks)).forEach(function(task,i){
     if (task.completed == true) {
       output.push(
-        `<li id="task${task.id}" class="tasks" class="completed">${task.name}</div>`
+        `<li id="task${task.id}" class="tasks completedtrue">${task.name} - completed</div>`
       );
     } else {
       output.push(
-        `<li id="task${task.id}" class="tasks" class="notcompleted">${task.name}</div>`
+        `<li id="task${task.id}" class="tasks completedfalse">${task.name} - notcompleted</div>`
       );
     }
   });
   taskContainer.innerHTML = output.join("");
+  /*Delete on click
   tasks = taskContainer.querySelectorAll('.tasks');
   for(var i=0; i<tasks.length; i++){
     tasks[i].addEventListener('click', function(){
       removeTask(this.id.replace("task", ""));
       updateHTML();
+    });
+  }*/
+  tasks = taskContainer.querySelectorAll('.tasks');
+  for(var i=0; i<tasks.length; i++){
+    tasks[i].addEventListener('click', function(){
+      changeStatus(this.id.replace("task", ""));
+      updateHTML();
+      console.log("change");
     });
   }
 }
@@ -43,7 +52,6 @@ function addTask (taskname) {
 }
 
 function removeTask (taskid) {
-  console.log("rmove");
   localList = JSON.parse(localStorage.tasks);
   localList.forEach(function(task, i) {
     if(task.id == taskid){
@@ -54,12 +62,16 @@ function removeTask (taskid) {
   localStorage.tasks = JSON.stringify(localList);
 }
 
-function markAsDone (taskname) {
-
-}
-
-function markAsNotDone (taskname) {
-
+function changeStatus(taskid) {
+  console.log(taskid);
+  localList = JSON.parse(localStorage.tasks);
+  localList.forEach(function(task, i) {
+    if(task.id == taskid){
+      console.log(task.completed);
+      task.completed = !task.completed;
+    }
+  });
+  localStorage.tasks = JSON.stringify(localList);
 }
 
 submitButton = document.getElementById('submit');

@@ -66,6 +66,19 @@ body{
   float:right;
 }
 
+.move{
+  margin-right: 10px;
+  background-color: orchid;
+  width:20px;
+  height:25px;
+  display:inline-block;
+  float:left;
+}
+
+.move:hover{
+  background-color: plum;
+}
+
 .delete:hover{
   background-color: tomato;
 }

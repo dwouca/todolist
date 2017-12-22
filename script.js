@@ -21,11 +21,11 @@ function updateHTML () {
     (JSON.parse(localStorage.tasks)).forEach(function(task){
       if (task.completed == true) {
         completed.push(
-          `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedtrue">${task.name}</li></div>`
+          `<div id="task${task.id}" class="sortable"><div class="delete"></div><div class="move"></div><li class="tasks completedtrue">${task.name}</li></div>`
         );
       } else {
         notcompleted.push(
-          `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedfalse">${task.name}</li></div>`
+          `<div id="task${task.id}" class="sortable"><div class="delete"></div><div class="move"></div><li class="tasks completedfalse">${task.name}</li></div>`
         );
       }
     });
@@ -126,6 +126,7 @@ function changeOrderVar() {
 submitButton = document.getElementById('submit');
 inputField = document.getElementById("input");
 taskContainer = document.getElementById("tasks");
+$taskContainer = $("#tasks");
 orderSelect = document.getElementById("ordertype");
 
 disableButton();
@@ -145,4 +146,8 @@ inputField.oninput = function() {
 submitButton.addEventListener("click", function() {
   addTask(inputField.value);
   updateHTML();
+});
+
+$(function() {
+    $taskContainer.sortable();
 });

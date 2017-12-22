@@ -6,30 +6,56 @@ if(localStorage.getItem("idNo") === null){
   localStorage.idNo = JSON.stringify(0);
 }
 
+if(localStorage.getItem("sortBy") === null){
+  localStorage.sortBy = JSON.stringify("chosen"); /* chosen or alph */
+}
+
+localStorage.sortBy = JSON.stringify("alph");
 
 function updateHTML () {
   output = [];
   completed = [];
   notcompleted = [];
   /* create <div> for each task */
-  (JSON.parse(localStorage.tasks)).forEach(function(task,i){
-    if (task.completed == true) {
-      completed.push(
-        `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedtrue">${task.name} - completed</li></div>`
+  if(JSON.parse(localStorage.sortBy) == "chosen"){
+    (JSON.parse(localStorage.tasks)).forEach(function(task){
+      if (task.completed == true) {
+        completed.push(
+          `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedtrue">${task.name}</li></div>`
+        );
+      } else {
+        notcompleted.push(
+          `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedfalse">${task.name}</li></div>`
+        );
+      }
+    });
+    /* not completed tasks first */
+    notcompleted.forEach(function(task){
+      output.push(task);
+    });
+    completed.forEach(function(task){
+      output.push(task);
+    });
+  } else if(JSON.parse(localStorage.sortBy) == "alph") {
+    alphabeticalSorted = [];
+    alphabeticalSorted = (JSON.parse(localStorage.tasks)).sort(function(a,b) {
+      if (a.name.toLowerCase() < b.name.toLowerCase()) {
+        return -1;
+      } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+        return 1;
+      } else {
+      return 0;
+      }
+    })
+    console.log(alphabeticalSorted);
+    alphabeticalSorted.forEach(function(task){
+      output.push(
+        `<div id="task${task.id}"><div class="delete"></div><li class="tasks completed${task.completed}">${task.name}</li></div>`
       );
-    } else {
-      notcompleted.push(
-        `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedfalse">${task.name} - notcompleted</li></div>`
-      );
-    }
-  });
-  /* not completed tasks first */
-  notcompleted.forEach(function(task){
-    output.push(task);
-  });
-  completed.forEach(function(task){
-    output.push(task);
-  });
+      console.log(task.name);
+    });
+  };
+
   taskContainer.innerHTML = output.join("");
 
   /* delete on remove button click */
@@ -81,19 +107,40 @@ function changeStatus(taskid) {
   localStorage.tasks = JSON.stringify(localList);
 }
 
-submitButton = document.getElementById('submit');
-inputField = document.getElementById("input");
-taskContainer = document.getElementById("tasks");
-
-updateHTML();
-
-setInterval(function() {
+function disableButton() {
   if(inputField.value == ""){
     submitButton.disabled = true;
   } else {
     submitButton.disabled = false;
   }
-}, 10);
+}
+
+function changeOrderVar() {
+  if (orderSelect.options[orderSelect.selectedIndex].value == "alph") {
+    localStorage.sortBy = JSON.stringify("alph");
+  } else if (orderSelect.options[orderSelect.selectedIndex].value == "chosen") {
+    localStorage.sortBy = JSON.stringify("chosen");
+  }
+}
+
+submitButton = document.getElementById('submit');
+inputField = document.getElementById("input");
+taskContainer = document.getElementById("tasks");
+orderSelect = document.getElementById("ordertype");
+
+disableButton();
+changeOrderVar();
+updateHTML();
+
+orderSelect.onchange = function() {
+  changeOrderVar();
+  updateHTML();
+}
+
+inputField.oninput = function() {
+  disableButton();
+  updateHTML();
+}
 
 submitButton.addEventListener("click", function() {
   addTask(inputField.value);

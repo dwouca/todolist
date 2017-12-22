@@ -1,4 +1,3 @@
-
 @import url(https://fonts.googleapis.com/css?family=Work+Sans:300,600);
 
 body{
@@ -47,6 +46,10 @@ ul{
   width: 400px;
   margin: auto 0;
   display: inline-block;
+}
+
+#ordertype{
+  font-family: 'Work Sans', sans-serif;
 }
 
 body{

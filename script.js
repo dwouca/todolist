@@ -20,21 +20,14 @@ function updateHTML () {
   if(JSON.parse(localStorage.sortBy) == "chosen"){
     (JSON.parse(localStorage.tasks)).forEach(function(task){
       if (task.completed == true) {
-        completed.push(
+        output.push(
           `<div id="task${task.id}" class="sortable"><div class="delete"></div><div class="move"></div><li class="tasks completedtrue">${task.name}</li></div>`
         );
       } else {
-        notcompleted.push(
+        output.push(
           `<div id="task${task.id}" class="sortable"><div class="delete"></div><div class="move"></div><li class="tasks completedfalse">${task.name}</li></div>`
         );
       }
-    });
-    /* not completed tasks first */
-    notcompleted.forEach(function(task){
-      output.push(task);
-    });
-    completed.forEach(function(task){
-      output.push(task);
     });
   } else if(JSON.parse(localStorage.sortBy) == "alph") {
     alphabeticalSorted = [];
@@ -47,12 +40,29 @@ function updateHTML () {
       return 0;
       }
     })
-    console.log(alphabeticalSorted);
     alphabeticalSorted.forEach(function(task){
       output.push(
         `<div id="task${task.id}"><div class="delete"></div><li class="tasks completed${task.completed}">${task.name}</li></div>`
       );
-      console.log(task.name);
+    });
+  } else if(JSON.parse(localStorage.sortBy) == "comp"){
+    (JSON.parse(localStorage.tasks)).forEach(function(task){
+      if (task.completed == true) {
+        completed.push(
+          `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedtrue">${task.name}</li></div>`
+        );
+      } else {
+        notcompleted.push(
+          `<div id="task${task.id}"><div class="delete"></div><li class="tasks completedfalse">${task.name}</li></div>`
+        );
+      }
+    });
+    /* not completed tasks first */
+    notcompleted.forEach(function(task){
+      output.push(task);
+    });
+    completed.forEach(function(task){
+      output.push(task);
     });
   };
 
@@ -74,13 +84,12 @@ function updateHTML () {
       updateHTML();
     });
   }
-  $('.move').mousedown(function(){
+  $('.move').mousedown(function() {
     $taskContainer.sortable({ disabled: false });
   })
 
-  $('.move').mouseup(function(){
+  $('.move').mouseup(function() {
     $taskContainer.sortable({ disabled: true });
-    let order = $taskContainer.sortable('toString');
   })
 }
 
@@ -128,6 +137,8 @@ function changeOrderVar() {
     localStorage.sortBy = JSON.stringify("alph");
   } else if (orderSelect.options[orderSelect.selectedIndex].value == "chosen") {
     localStorage.sortBy = JSON.stringify("chosen");
+  } else if (orderSelect.options[orderSelect.selectedIndex].value == "comp") {
+    localStorage.sortBy = JSON.stringify("comp");
   }
 }
 
@@ -156,6 +167,15 @@ submitButton.addEventListener("click", function() {
   updateHTML();
 });
 
-$(function() {
-  /*$('.sortable').sortable('toArray');*/
-});
+$taskContainer.sortable({stop: function(event, ui) {
+  let order = $taskContainer.sortable('toArray');
+  let newTaskList = [];
+  order.forEach(function(id){
+    JSON.parse(localStorage.tasks).forEach(function(task){
+      if(id=="task"+task.id){
+        newTaskList.push(task);
+      }
+    });
+  });
+  localStorage.tasks = JSON.stringify(newTaskList);
+}});

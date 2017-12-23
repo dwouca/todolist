@@ -74,6 +74,14 @@ function updateHTML () {
       updateHTML();
     });
   }
+  $('.move').mousedown(function(){
+    $taskContainer.sortable({ disabled: false });
+  })
+
+  $('.move').mouseup(function(){
+    $taskContainer.sortable({ disabled: true });
+    let order = $taskContainer.sortable('toString');
+  })
 }
 
 function addTask (taskname) {
@@ -149,5 +157,5 @@ submitButton.addEventListener("click", function() {
 });
 
 $(function() {
-    $taskContainer.sortable();
+  /*$('.sortable').sortable('toArray');*/
 });
